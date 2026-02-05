@@ -9,7 +9,7 @@ import './App.css';
 import { subscribeToDevices, subscribeToAlerts } from './firebase';
 
 // Components
-import Header from './components/Header';
+import Navbar from './components/Navbar';
 import StatsGrid from './components/StatsGrid';
 import DeviceCard from './components/DeviceCard';
 import AlertsList from './components/AlertsList';
@@ -23,6 +23,7 @@ function App() {
     const [selectedDevice, setSelectedDevice] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [connectionStatus, setConnectionStatus] = useState('connecting');
+    const [activeSection, setActiveSection] = useState('dashboard');
 
     // Subscribe to Firebase data on mount
     useEffect(() => {
@@ -65,10 +66,12 @@ function App() {
 
     return (
         <div className="app">
-            {/* Header */}
-            <Header
+            {/* Navbar */}
+            <Navbar
                 connectionStatus={connectionStatus}
                 alertCount={stats.activeAlerts}
+                activeSection={activeSection}
+                onSectionChange={setActiveSection}
             />
 
             {/* Main Content */}
