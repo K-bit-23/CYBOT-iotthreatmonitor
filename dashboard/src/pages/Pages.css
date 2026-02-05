@@ -54,6 +54,201 @@
 }
 
 /* Devices Page */
+
+/* Device Stats Bar */
+.device-stats-bar {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.stat-chip {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+}
+
+.stat-chip.pir {
+    border-left: 3px solid #4dabf7;
+}
+
+.stat-chip.gas {
+    border-left: 3px solid #ffd43b;
+}
+
+.stat-chip.normal {
+    border-left: 3px solid var(--status-normal);
+}
+
+.stat-chip.threat {
+    border-left: 3px solid var(--status-danger);
+}
+
+.chip-icon {
+    font-size: 1rem;
+}
+
+.chip-value {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent-primary);
+}
+
+.chip-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+/* Device Controls */
+.device-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.filter-buttons,
+.view-buttons {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.filter-btn,
+.view-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-btn:hover,
+.view-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+.filter-btn.active,
+.view-btn.active {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+/* Devices Table */
+.devices-table {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 50px 1fr 100px 150px 100px 100px;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: rgba(0, 0, 0, 0.3);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 100px 150px 100px 100px;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.table-row:hover {
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.table-row.selected {
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.table-row.threat {
+    border-left: 3px solid var(--status-danger);
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.status-dot.normal {
+    background: var(--status-normal);
+}
+
+.status-dot.threat {
+    background: var(--status-danger);
+    animation: pulse 1.5s infinite;
+}
+
+.type-badge {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.type-badge.pir {
+    background: rgba(77, 171, 247, 0.2);
+    color: #4dabf7;
+}
+
+.type-badge.gas {
+    background: rgba(255, 212, 59, 0.2);
+    color: #ffd43b;
+}
+
+.value-danger {
+    color: var(--status-danger);
+    font-weight: 600;
+}
+
+.value-success {
+    color: var(--status-normal);
+}
+
+.td-lastseen {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Full Width Stat */
+.stat-item.full-width {
+    grid-column: span 3;
+}
+
+/* Devices Grid */
 .devices-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
