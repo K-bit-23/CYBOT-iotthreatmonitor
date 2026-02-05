@@ -29,7 +29,7 @@ from firebase_config import (
 # Using HiveMQ Public Broker (free, no authentication required)
 MQTT_BROKER = os.getenv("MQTT_BROKER", "broker.hivemq.com")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-MQTT_TOPIC = "iot-cybot/#"  # Subscribe to all iot-cybot topics (pir, sensors, etc.)
+MQTT_TOPIC = "iot-cybot/pir/test"  # PIR sensor topic
 MQTT_CLIENT_ID = "iot_backend_server_cybot"
 
 # Model paths
