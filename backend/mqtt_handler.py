@@ -156,28 +156,32 @@ def on_disconnect(client, userdata, rc):
 def on_message(client, userdata, msg):
     """
     Callback when MQTT message is received.
-    Handles topics like: iot-cybot/pir/test, iot-cybot/sensors/device1, etc.
+    Handles topics like: iot-cybot/pir/test, iot-cybot/gas/test, etc.
     """
     try:
         # Parse topic to get sensor type and device ID
-        # Topic format: iot-cybot/{sensor_type}/{device_id}
+        # Topic format: iot-cybot/{sensor_type}/{device_name}
         topic_parts = msg.topic.split("/")
         
         if len(topic_parts) >= 3:
-            sensor_type = topic_parts[1]  # e.g., "pir", "sensors"
-            device_id = topic_parts[2]    # e.g., "test", "device1"
+            sensor_type = topic_parts[1]  # e.g., "pir", "gas"
+            device_name = topic_parts[2]  # e.g., "test"
+            # Create unique device_id by combining sensor_type + device_name
+            device_id = f"{sensor_type}_{device_name}"  # e.g., "pir_test", "gas_test"
         elif len(topic_parts) >= 2:
             sensor_type = topic_parts[1]
-            device_id = "default"
+            device_name = "default"
+            device_id = f"{sensor_type}_{device_name}"
         else:
             sensor_type = "unknown"
-            device_id = "unknown"
+            device_name = "unknown"
+            device_id = "unknown_device"
         
         # Decode JSON payload
         payload = json.loads(msg.payload.decode('utf-8'))
         
         print(f"\n[MQTT] Message received on topic: {msg.topic}")
-        print(f"[MQTT] Sensor Type: {sensor_type}, Device: {device_id}")
+        print(f"[MQTT] Sensor Type: {sensor_type}, Device ID: {device_id}")
         print(f"[DATA] {json.dumps(payload, indent=2)}")
         
         # Process the sensor data
