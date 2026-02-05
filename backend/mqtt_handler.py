@@ -26,10 +26,11 @@ from firebase_config import (
 )
 
 # ============== CONFIGURATION ==============
-MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")
+# Using HiveMQ Public Broker (free, no authentication required)
+MQTT_BROKER = os.getenv("MQTT_BROKER", "broker.hivemq.com")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-MQTT_TOPIC = "iot/+/data"  # Subscribe to all device data topics
-MQTT_CLIENT_ID = "iot_backend_server"
+MQTT_TOPIC = "iot-cybot/#"  # Subscribe to all iot-cybot topics (pir, sensors, etc.)
+MQTT_CLIENT_ID = "iot_backend_server_cybot"
 
 # Model paths
 MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ml", "iot_model.pkl")
@@ -150,21 +151,32 @@ def on_disconnect(client, userdata, rc):
 def on_message(client, userdata, msg):
     """
     Callback when MQTT message is received.
+    Handles topics like: iot-cybot/pir/test, iot-cybot/sensors/device1, etc.
     """
     try:
-        # Parse topic to get device ID
-        # Topic format: iot/{device_id}/data
+        # Parse topic to get sensor type and device ID
+        # Topic format: iot-cybot/{sensor_type}/{device_id}
         topic_parts = msg.topic.split("/")
-        device_id = topic_parts[1] if len(topic_parts) >= 2 else "unknown"
+        
+        if len(topic_parts) >= 3:
+            sensor_type = topic_parts[1]  # e.g., "pir", "sensors"
+            device_id = topic_parts[2]    # e.g., "test", "device1"
+        elif len(topic_parts) >= 2:
+            sensor_type = topic_parts[1]
+            device_id = "default"
+        else:
+            sensor_type = "unknown"
+            device_id = "unknown"
         
         # Decode JSON payload
         payload = json.loads(msg.payload.decode('utf-8'))
         
-        print(f"\n[MQTT] Message received from device: {device_id}")
+        print(f"\n[MQTT] Message received on topic: {msg.topic}")
+        print(f"[MQTT] Sensor Type: {sensor_type}, Device: {device_id}")
         print(f"[DATA] {json.dumps(payload, indent=2)}")
         
         # Process the sensor data
-        process_sensor_data(device_id, payload)
+        process_sensor_data(device_id, payload, sensor_type)
         
     except json.JSONDecodeError as e:
         print(f"[ERROR] Invalid JSON payload: {e}")
@@ -173,27 +185,74 @@ def on_message(client, userdata, msg):
 
 
 # ============== DATA PROCESSING ==============
-def process_sensor_data(device_id, data):
+def process_sensor_data(device_id, data, sensor_type="sensors"):
     """
     Process incoming sensor data:
     1. Validate data
-    2. Run anomaly detection
+    2. Run anomaly detection (for temperature/humidity/gas sensors)
     3. Save to Firebase
     4. Generate alerts if needed
+    
+    Supports:
+    - PIR motion sensors (pir_motion field)
+    - Temperature/Humidity/Gas sensors
     """
-    # Extract sensor values
+    timestamp = datetime.now().isoformat()
+    
+    # Handle PIR Motion Sensor
+    if sensor_type == "pir" or "pir_motion" in data:
+        pir_value = data.get('pir_motion', 0)
+        motion_detected = pir_value == 0  # Based on your ESP code: 0 = motion detected
+        
+        reading_data = {
+            "sensor_type": "pir",
+            "pir_motion": pir_value,
+            "motion_detected": motion_detected,
+            "timestamp": timestamp,
+            "is_anomaly": motion_detected  # Motion = potential threat
+        }
+        
+        # Save to Firebase
+        save_device_data(device_id, reading_data)
+        
+        # Update device status
+        status = "threat" if motion_detected else "normal"
+        update_device_status(device_id, {
+            "state": status,
+            "last_seen": timestamp,
+            "sensor_type": "pir",
+            "motion_detected": motion_detected
+        })
+        
+        # Create alert if motion detected
+        if motion_detected:
+            alert_data = {
+                "device_id": device_id,
+                "timestamp": timestamp,
+                "type": "motion",
+                "severity": "high",
+                "pir_motion": pir_value,
+                "message": "🚨 Motion Detected!",
+                "acknowledged": False
+            }
+            save_alert(device_id, alert_data)
+            print(f"[ALERT] ⚠️  Motion detected on {device_id}!")
+        else:
+            print(f"[OK] Device {device_id}: No motion")
+        
+        return
+    
+    # Handle Temperature/Humidity/Gas Sensors
     temperature = data.get('temperature', 0)
     humidity = data.get('humidity', 0)
     gas_level = data.get('gas_level', 0)
-    
-    # Get timestamp
-    timestamp = datetime.now().isoformat()
     
     # Run anomaly detection
     is_anomaly, score, reasons = detect_anomaly(temperature, humidity, gas_level)
     
     # Prepare data for Firebase
     reading_data = {
+        "sensor_type": sensor_type,
         "temperature": temperature,
         "humidity": humidity,
         "gas_level": gas_level,
@@ -213,6 +272,7 @@ def process_sensor_data(device_id, data):
     update_device_status(device_id, {
         "state": status,
         "last_seen": timestamp,
+        "sensor_type": sensor_type,
         "temperature": temperature,
         "humidity": humidity,
         "gas_level": gas_level
