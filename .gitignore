@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+dashboard/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Firebase credentials (NEVER commit these!)
+*firebase-adminsdk*.json
+*serviceAccountKey*.json
+
+# ML model files (large, can be regenerated)
+ml/*.pkl
+ml/training_stats.json
+
+# Build outputs
+dashboard/build/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/

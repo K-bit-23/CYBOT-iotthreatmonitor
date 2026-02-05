@@ -1,0 +1,21 @@
+# Flask Backend Dependencies
+# Lightweight IoT Anomaly Detection System
+
+# Web Framework
+flask==3.0.0
+flask-cors==4.0.0
+
+# MQTT Client
+paho-mqtt==1.6.1
+
+# Firebase Admin SDK
+firebase-admin==6.4.0
+
+# Machine Learning
+scikit-learn==1.4.0
+joblib==1.3.2
+numpy==1.26.3
+pandas==2.1.4
+
+# Utilities
+python-dotenv==1.0.0
