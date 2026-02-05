@@ -14,6 +14,7 @@ import StatsGrid from './components/StatsGrid';
 import DeviceCard from './components/DeviceCard';
 import AlertsList from './components/AlertsList';
 import SensorChart from './components/SensorChart';
+import NetworkStats from './components/NetworkStats';
 
 function App() {
     // State
@@ -193,6 +194,11 @@ function App() {
                         <AlertsList alerts={alerts} />
                     </section>
                 </div>
+
+                {/* Network Monitor Section */}
+                <section className="section network-section">
+                    <NetworkStats />
+                </section>
             </main>
 
             {/* Footer */}

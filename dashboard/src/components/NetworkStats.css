@@ -1,0 +1,282 @@
+/**
+ * NetworkStats Component Styles
+ */
+
+.network-stats {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-lg);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.network-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.network-title {
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.connection-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-full);
+}
+
+.connection-status.online {
+    background: rgba(0, 230, 118, 0.15);
+    color: var(--status-normal);
+}
+
+.connection-status.offline {
+    background: rgba(255, 82, 82, 0.15);
+    color: var(--status-danger);
+}
+
+/* Speed Cards */
+.speed-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.speed-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-normal);
+}
+
+.speed-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.speed-card.excellent {
+    border-left: 3px solid #00e676;
+}
+
+.speed-card.good {
+    border-left: 3px solid #00d4ff;
+}
+
+.speed-card.fair {
+    border-left: 3px solid #ffab00;
+}
+
+.speed-card.poor {
+    border-left: 3px solid #ff5252;
+}
+
+.speed-icon {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.speed-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-sm);
+}
+
+.speed-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.speed-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--accent-primary);
+}
+
+.speed-value small {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-left: 4px;
+}
+
+.speed-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.speed-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), #00e676);
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease;
+}
+
+.speed-fill.upload-fill {
+    background: linear-gradient(90deg, #7b2cbf, #ff6b9d);
+}
+
+/* Network Info Grid */
+.network-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.info-item {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.info-icon {
+    display: block;
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+}
+
+/* Traffic Chart */
+.traffic-chart {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.traffic-chart .chart-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+.traffic-chart .chart-container {
+    height: 80px;
+    overflow: hidden;
+}
+
+.traffic-chart .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    gap: 4px;
+}
+
+.traffic-bar-group {
+    flex: 1;
+    display: flex;
+    gap: 2px;
+    height: 100%;
+    align-items: flex-end;
+}
+
+.traffic-bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    transition: height 0.3s ease;
+    min-height: 4px;
+}
+
+.traffic-bar.download-bar {
+    background: linear-gradient(to top, var(--accent-primary), #00b8d9);
+}
+
+.traffic-bar.upload-bar {
+    background: linear-gradient(to top, #7b2cbf, #9d4edd);
+}
+
+.traffic-chart .chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-sm);
+}
+
+.traffic-chart .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.traffic-chart .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.traffic-chart .legend-dot.download {
+    background: var(--accent-primary);
+}
+
+.traffic-chart .legend-dot.upload {
+    background: #7b2cbf;
+}
+
+/* Packet Stats */
+.packet-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.packet-item {
+    text-align: center;
+}
+
+.packet-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.packet-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--accent-primary);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .network-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

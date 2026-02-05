@@ -208,6 +208,13 @@
     animation: pulse 2s infinite;
 }
 
+/* Network Section */
+.network-section {
+    margin-top: var(--spacing-lg);
+    background: transparent;
+    border: none;
+}
+
 /* Loading State */
 .loading-state {
     display: flex;
