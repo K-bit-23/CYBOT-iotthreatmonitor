@@ -29,7 +29,11 @@ from firebase_config import (
 # Using HiveMQ Public Broker (free, no authentication required)
 MQTT_BROKER = os.getenv("MQTT_BROKER", "broker.hivemq.com")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-MQTT_TOPIC = "iot-cybot/pir/test"  # PIR sensor topic
+# Subscribe to multiple topics: PIR and Gas sensors
+MQTT_TOPICS = [
+    ("iot-cybot/pir/test", 0),   # PIR motion sensor
+    ("iot-cybot/gas/test", 0),   # Gas sensor
+]
 MQTT_CLIENT_ID = "iot_backend_server_cybot"
 
 # Model paths
@@ -128,9 +132,10 @@ def on_connect(client, userdata, flags, rc):
         is_connected = True
         print(f"[MQTT] Connected to broker at {MQTT_BROKER}:{MQTT_PORT}")
         
-        # Subscribe to device data topics
-        client.subscribe(MQTT_TOPIC)
-        print(f"[MQTT] Subscribed to: {MQTT_TOPIC}")
+        # Subscribe to all device topics
+        client.subscribe(MQTT_TOPICS)
+        for topic, qos in MQTT_TOPICS:
+            print(f"[MQTT] Subscribed to: {topic}")
     else:
         is_connected = False
         print(f"[MQTT] Connection failed with code: {rc}")
@@ -239,6 +244,52 @@ def process_sensor_data(device_id, data, sensor_type="sensors"):
             print(f"[ALERT] ⚠️  Motion detected on {device_id}!")
         else:
             print(f"[OK] Device {device_id}: No motion")
+        
+        return
+    
+    # Handle Gas Sensor
+    if sensor_type == "gas" or "gas_value" in data:
+        gas_value = data.get('gas_value', data.get('gas_level', 0))
+        gas_threshold = 500  # Threshold for high gas level
+        is_high_gas = gas_value > gas_threshold
+        
+        reading_data = {
+            "sensor_type": "gas",
+            "gas_value": gas_value,
+            "gas_level": gas_value,
+            "is_high": is_high_gas,
+            "timestamp": timestamp,
+            "is_anomaly": is_high_gas
+        }
+        
+        # Save to Firebase
+        save_device_data(device_id, reading_data)
+        
+        # Update device status
+        status = "threat" if is_high_gas else "normal"
+        update_device_status(device_id, {
+            "state": status,
+            "last_seen": timestamp,
+            "sensor_type": "gas",
+            "gas_level": gas_value,
+            "is_high": is_high_gas
+        })
+        
+        # Create alert if high gas detected
+        if is_high_gas:
+            alert_data = {
+                "device_id": device_id,
+                "timestamp": timestamp,
+                "type": "gas",
+                "severity": "high",
+                "gas_level": gas_value,
+                "message": f"🔥 High Gas Level Detected: {gas_value}",
+                "acknowledged": False
+            }
+            save_alert(device_id, alert_data)
+            print(f"[ALERT] ⚠️  High gas level on {device_id}: {gas_value}")
+        else:
+            print(f"[OK] Device {device_id}: Gas level normal ({gas_value})")
         
         return
     
@@ -359,7 +410,7 @@ def get_mqtt_status():
         "connected": is_connected,
         "broker": MQTT_BROKER,
         "port": MQTT_PORT,
-        "topic": MQTT_TOPIC
+        "topics": [t[0] for t in MQTT_TOPICS]
     }
 
 
