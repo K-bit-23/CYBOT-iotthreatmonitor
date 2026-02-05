@@ -15,6 +15,7 @@ import DeviceCard from './components/DeviceCard';
 import AlertsList from './components/AlertsList';
 import SensorChart from './components/SensorChart';
 import NetworkStats from './components/NetworkStats';
+import SecurityMonitor from './components/SecurityMonitor';
 
 // Pages
 import DevicesPage from './pages/DevicesPage';
@@ -224,6 +225,17 @@ function App() {
                         {/* Network Monitor Section */}
                         <section className="section network-section">
                             <NetworkStats />
+                        </section>
+
+                        {/* Security Monitor Section */}
+                        <section className="section security-section">
+                            <div className="section-header">
+                                <h2 className="section-title">
+                                    <span className="icon">🛡️</span>
+                                    Security Monitor
+                                </h2>
+                            </div>
+                            <SecurityMonitor alerts={alerts} devices={devices} />
                         </section>
                     </>
                 );

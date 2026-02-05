@@ -215,6 +215,13 @@
     border: none;
 }
 
+/* Security Section */
+.security-section {
+    margin-top: var(--spacing-lg);
+    background: transparent;
+    border: none;
+}
+
 /* Loading State */
 .loading-state {
     display: flex;
